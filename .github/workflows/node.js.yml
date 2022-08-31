@@ -19,21 +19,27 @@ jobs:
         with:
           username: ${{ secrets. DOCKERHUB_USERNAME }}
           password: ${{ secrets. DOCKERHUB_TOKEN }}
-
       - name: Build and push
-        if: github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./Dockerfile
           push: true
           tags: ankitbhojani/awsdemo:latest
+        if: github.ref == 'refs/heads/develop'
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: ankitbhojani/awsdemo_develop:latest
   run_on_container:
     runs-on: ubuntu-latest
     needs: [push_to_Docker_Hub]
     steps:
       - name: Deploy using ssh
-        if: github.ref == 'refs/heads/develop'
+        if: github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -47,3 +53,18 @@ jobs:
             #run new docker container
             docker run --name deploydocker -d -p 3000:3000 ankitbhojani/awsdemo:latest
             exit
+        if: github.ref == 'refs/heads/develop'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            #remove docker container which are running
+            docker rm -f $(docker ps -a -q)
+            #pull docker image if any changes
+            docker pull ankitbhojani/awsdemo_develop:latest
+            #run new docker container
+            docker run --name deploydocker -d -p 4000:4000 ankitbhojani/awsdemo_develop:latest
+            exit
+            
