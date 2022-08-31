@@ -53,7 +53,7 @@ jobs:
             #run new docker container
             docker run --name deploydocker -d -p 3000:3000 ankitbhojani/awsdemo:latest
             #remove docker container which are running
-            docker container rm deploydocker
+            docker container prune
             exit
       - name: Deploy using ssh development
         if: github.ref == 'refs/heads/develop'
@@ -69,6 +69,6 @@ jobs:
             #run new docker container
             docker run --name deploydocker_develop -d -p 4000:4000 ankitbhojani/awsdemo_develop:latest
             #remove docker container which are not in use
-            docker container rm deploydocker_develop
+            docker container prune
             exit
             
