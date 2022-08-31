@@ -36,7 +36,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          image: ankitbhojani/awsdemo:latest
           script: |
             #remove docker container which are running
             docker rm -f $(docker ps -a -q)
