@@ -48,12 +48,12 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             # PROD DEPLOYMENT
-            #remove docker container which are running
-            docker rm -f $(docker ps -a -q)
             #pull docker image if any changes
             docker pull ankitbhojani/awsdemo:latest
             #run new docker container
             docker run --name deploydocker -d -p 3000:3000 ankitbhojani/awsdemo:latest
+            #remove docker container which are running
+            docker rm deploydocker
             exit
       - name: Deploy using ssh development
         if: github.ref == 'refs/heads/develop'
@@ -63,12 +63,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            # PROD DEPLOYMENT
-            #remove docker container which are running
-            docker rm -f $(docker ps -a -q)
+            # DEVELOP DEPLOYMENT
             #pull docker image if any changes
             docker pull ankitbhojani/awsdemo_develop:latest
             #run new docker container
-            docker run --name deploydocker -d -p 4000:4000 ankitbhojani/awsdemo_develop:latest
+            docker run --name deploydocker_develop -d -p 4000:4000 ankitbhojani/awsdemo_develop:latest
+            #remove docker container which are not in use
+            docker rm deploydocker_develop
             exit
             
