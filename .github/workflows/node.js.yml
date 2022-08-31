@@ -20,15 +20,14 @@ jobs:
           username: ${{ secrets. DOCKERHUB_USERNAME }}
           password: ${{ secrets. DOCKERHUB_TOKEN }}
       - name: Build and push
-        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/main'
         with:
           context: ./
           file: ./Dockerfile
           push: true
           tags: ankitbhojani/awsdemo:latest
         if: github.ref == 'refs/heads/develop'
-        uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./Dockerfile
@@ -39,8 +38,8 @@ jobs:
     needs: [push_to_Docker_Hub]
     steps:
       - name: Deploy using ssh
-        if: github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@master
+        if: github.ref == 'refs/heads/main'
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -55,7 +54,6 @@ jobs:
             docker run --name deploydocker -d -p 3000:3000 ankitbhojani/awsdemo:latest
             exit
         if: github.ref == 'refs/heads/develop'
-        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
