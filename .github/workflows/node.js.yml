@@ -44,3 +44,4 @@ jobs:
             docker pull ankitbhojani/awsdemo:latest
             #run new docker container
             docker run --name deploydocker -d -p 3000:3000 ankitbhojani/awsdemo:latest
+            exit
